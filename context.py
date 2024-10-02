@@ -11,13 +11,13 @@ device = 'cuda:1' if torch.cuda.is_available() else 'cpu'
 model = BlipModel.from_pretrained("Salesforce/blip-image-captioning-base").to(device)
 processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 
-dir = '/mnt/data0/Datasets/MPHOI-72-raw/MPHOI_rgb'
-save_dir = '/mnt/data0/Datasets/MPHOI/mphoi_derived_features/global_context.zarr'
+dir = '/Datasets/MPHOI-72-raw/MPHOI_rgb'
+save_dir = '/Datasets/MPHOI/mphoi_derived_features/global_context.zarr'
 root = zarr.open(save_dir , mode='a')
-chunk_size = [256, 256] # 分块的大小
-dtype = np.float64 # 数据类型
+chunk_size = [256, 256] 
+dtype = np.float64 
 compressor = {'id': 'gzip', 'level': 5}
-compressor = zarr.get_codec(compressor) # 压缩方式
+compressor = zarr.get_codec(compressor) 
 for subject in os.listdir(dir):
     dir_sub = os.path.join(dir, subject)
     for activity in os.listdir(dir_sub):
@@ -55,16 +55,13 @@ for subject in os.listdir(dir):
             ds[:] = ret
 exit()
 for i in range(1, 7):
-    # dir = '/mnt/data0/Datasets/MPHOI-72-raw/MPHOI_rgb_0'+ str(i)
-    # save_dir = '/mnt/data0/Datasets/MPHOI/mphoi_derived_features/global_context.zarr'
-
-    dir = '/mnt/data0/Datasets/Bimanual_Actions/Bimanual_Actions_RGB-D_Dataset/bimacs_rgbd_data_subject_'+str(i)+'/bimacs_rgbd_data'
-    save_dir = '/mnt/data0/Datasets/BimanualActions/bimacs_derived_features/global_context.zarr'
+    dir = '/Datasets/Bimanual_Actions/Bimanual_Actions_RGB-D_Dataset/bimacs_rgbd_data_subject_'+str(i)+'/bimacs_rgbd_data'
+    save_dir = '/Datasets/BimanualActions/bimacs_derived_features/global_context.zarr'
     root = zarr.open(save_dir , mode='a')
-    chunk_size = [256, 256] # 分块的大小
-    dtype = np.float64 # 数据类型
+    chunk_size = [256, 256] 
+    dtype = np.float64 
     compressor = {'id': 'gzip', 'level': 5}
-    compressor = zarr.get_codec(compressor) # 压缩方式
+    compressor = zarr.get_codec(compressor) 
     for subject in os.listdir(dir):
         dir_sub = os.path.join(dir, subject)
         for activity in os.listdir(dir_sub):

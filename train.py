@@ -72,7 +72,7 @@ def main(cfg: DictConfig):
     TEMPORAL_BETA = cfg.data.temporal_beta
 
     if cfg.hyperparam.isr:
-        isr_feature = torch.load('/mnt/data0/Datasets/vhoi_model/isr.pt')
+        isr_feature = torch.load('/Datasets/vhoi_model/isr.pt')
     else:
         isr_feature = None
     print('isr: ', cfg.hyperparam.isr)
@@ -81,7 +81,7 @@ def main(cfg: DictConfig):
     feature_clip_init = True
     print('feature clip: ', feature_clip_init)
     if feature_clip_init:
-        feature = torch.load('/mnt/data0/Datasets/vhoi_model/' + dataset_name + '_label.pt')
+        feature = torch.load('/Datasets/vhoi_model/' + dataset_name + '_label.pt')
     else:
         feature = None
     
@@ -97,10 +97,10 @@ def main(cfg: DictConfig):
     print('test subject id :', test_subject_id)
     if PRETRAINED:
         if local_rank == -1:
-            model.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt'))
+            model.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt'))
         else:
             map_location = torch.device(f'cuda:{local_rank}')
-            model.module.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
+            model.module.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
         print('Load from saved model')
 
     data_path = cfg.data.path
@@ -133,11 +133,6 @@ def main(cfg: DictConfig):
     def loss_new(pred, target, temporal_diff, seg, pred_obj=None, target_obj=None, gamma=2, eps=1e-8):
         temporal = torch.multiply(temporal_diff, 1 - seg).pow(2)/2 + torch.multiply(torch.nn.functional.relu(10 - temporal_diff), seg).pow(2)/2
         temporal *= TEMPORAL_BETA # 2e-4
-        '''
-        isr: mphoi: 0.1; bimanual: 2; cad: 1e-3 !!!!!!!
-        normal: cad120: 0.1, other: 2
-        '''
-
         obj_loss = None
         if pred_obj is not None:
             obj_mask = target_obj == -1
@@ -467,10 +462,10 @@ def main(cfg: DictConfig):
             if local_rank == -1 or local_rank == Base:
                 print('Load old model')
             if local_rank == -1:
-                model.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt'))
+                model.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt'))
             else:
                 map_location = torch.device(f'cuda:{local_rank}')
-                model.module.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt', map_location=map_location))
+                model.module.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt', map_location=map_location))
                 torch.distributed.barrier()
             continue
 
@@ -480,14 +475,13 @@ def main(cfg: DictConfig):
         if local_rank == -1 or local_rank == Base:
             print('Save new model')
         if local_rank == -1:
-            torch.save(model.state_dict(), '/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt')
+            torch.save(model.state_dict(), '/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt')
         else:
             if local_rank == Base:
-                torch.save(model.module.state_dict(), '/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt')
+                torch.save(model.module.state_dict(), '/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id  +'_model.pt')
             torch.distributed.barrier()
 
 
 
 if __name__ == '__main__':
     main()
-

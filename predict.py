@@ -50,14 +50,14 @@ def main(cfg):
     affordance = cfg.hyperparam.affordance
 
     if cfg.hyperparam.isr:
-        isr_feature = torch.load('/mnt/data0/Datasets/vhoi_model/isr.pt')
+        isr_feature = torch.load('/Datasets/vhoi_model/isr.pt')
     else:
         isr_feature = None
 
     feature_clip_init = True
     print('feature clip: ', feature_clip_init)
     if feature_clip_init:
-        feature = torch.load('/mnt/data0/Datasets/vhoi_model/' + dataset_name + '_label.pt')
+        feature = torch.load('/Datasets/vhoi_model/' + dataset_name + '_label.pt')
     else:
         feature = None
     
@@ -69,9 +69,9 @@ def main(cfg):
     print('test subject id: ', test_subject_id)
     if SYSTEM == 'Linux':
         map_location = device
-        model.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
+        model.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
     elif SYSTEM == 'Windows':
-        model.load_state_dict(torch.load('d:/intern/2G-GCN/'+ dataset_name +'_model.pt'))
+        model.load_state_dict(torch.load('/2G-GCN/'+ dataset_name +'_model.pt'))
 
     
     misc_dict = cfg.get('misc', default_value={})

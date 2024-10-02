@@ -44,15 +44,15 @@ def main(cfg):
     if 'BimanualActions' in data_path:
         label_num = 14
         if SYSTEM == 'Linux':
-            init_label = torch.load('/mnt/data0/Datasets/BimanualActions/label.pt')
+            init_label = torch.load('/Datasets/BimanualActions/label.pt')
         elif SYSTEM == 'Windows':
-            init_label = torch.load('d:/intern/2G-GCN/data/BimanualActions/label.pt')
+            init_label = torch.load('/2G-GCN/data/BimanualActions/label.pt')
     elif 'MPHOI' in data_path:
         label_num = 13
         if SYSTEM == 'Linux':
-            init_label = torch.load('/mnt/data0/Datasets/MPHOI/label.pt')
+            init_label = torch.load('/Datasets/MPHOI/label.pt')
         elif SYSTEM == 'Windows':
-            init_label = torch.load('d:/intern/2G-GCN/data/MPHOI/label.pt')
+            init_label = torch.load('/2G-GCN/data/MPHOI/label.pt')
     else:
         label_num = 10
     # sim = torch.nn.functional.cosine_similarity(init_label.unsqueeze(0), init_label.unsqueeze(1), dim=-1)
@@ -91,14 +91,14 @@ def main(cfg):
         isr = True
 
     if isr:
-        isr_feature = torch.load('/mnt/data0/Datasets/vhoi_model/isr.pt')
+        isr_feature = torch.load('/Datasets/vhoi_model/isr.pt')
     else:
         isr_feature = None
 
     feature_clip_init = True
     print('feature clip: ', feature_clip_init)
     if feature_clip_init:
-        feature = torch.load('/mnt/data0/Datasets/vhoi_model/' + dataset_name + '_label.pt')
+        feature = torch.load('/Datasets/vhoi_model/' + dataset_name + '_label.pt')
     else:
         feature = None
 
@@ -114,9 +114,9 @@ def main(cfg):
     print('test subject id: ', test_subject_id)
     if SYSTEM == 'Linux':
         map_location = device
-        model.load_state_dict(torch.load('/mnt/data0/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
+        model.load_state_dict(torch.load('/Datasets/vhoi_model/'+ dataset_name + '_' + test_subject_id +'_model.pt', map_location=map_location))
     elif SYSTEM == 'Windows':
-        model.load_state_dict(torch.load('d:/intern/2G-GCN/'+ dataset_name +'_model.pt'))
+        model.load_state_dict(torch.load('/2G-GCN/'+ dataset_name +'_model.pt'))
 
     
     misc_dict = cfg.get('misc', default_value={})
@@ -293,29 +293,21 @@ def main(cfg):
     #     fet = fet[rand_idx]
     #     frm = frm[rand_idx]
 
-    with open('/home/xn/code/ys/2G-GCN/frame.json', 'w') as f:
+    with open('/2G-GCN/frame.json', 'w') as f:
         json.dump(preds_frame, f, indent=4)
-    # preds_feature = [preds_feature[0], preds_feature[6]]
-    
-    # y = []
-    # s = []
-    # for idx, i in enumerate(preds_feature):
-    #     y += [idx] * len(i)
-    #     s.append(max_num)
-    #     s += [1] * (len(i)-1)
 
     X = sum(preds_feature, [])
     X = np.array([i.tolist() for i in X]).astype(np.float)
     print(X.shape)
     print(X.dtype)
     
-    torch.save(X, '/home/xn/code/ys/2G-GCN/embed.pt')
+    torch.save(X, '/2G-GCN/embed.pt')
     exit()
 
     embed = TSNE(n_components=3,
                    init='random', perplexity=30).fit_transform(X)
     embed = torch.tensor(embed)
-    torch.save(embed, '/home/xn/code/ys/2G-GCN/embed.pt')
+    torch.save(embed, '/2G-GCN/embed.pt')
     
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
@@ -327,9 +319,7 @@ def main(cfg):
     # plt.scatter(embed[:, 0], embed[:, 1], c=y, s=s)
     # plt.colorbar()
 
-    plt.savefig('/home/xn/code/ys/2G-GCN/vis.png')
-
-
+    plt.savefig('/2G-GCN/vis.png')
 
 if __name__ == '__main__':
     main()
